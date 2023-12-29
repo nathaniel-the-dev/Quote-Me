@@ -3,9 +3,13 @@ import { useQuote } from '../../providers/QuoteProvider';
 import GetQuote from './GetQuote';
 import QuoteCard from '../../ui/QuoteCard';
 import { useQuoteAnimation } from './useQuoteAnimation';
+import Button from '../../ui/Button';
+import { HiStar, HiOutlineStar } from 'react-icons/hi2';
+import { useFavoriteQuote } from './useFavoriteQuote';
 
 const DisplayQuote = () => {
 	const { quote, getQuotes } = useQuote();
+	const { isFavorited, toggleFavorite } = useFavoriteQuote(quote);
 	const { style } = useQuoteAnimation(quote);
 
 	if (!quote) return null;
@@ -31,8 +35,16 @@ const DisplayQuote = () => {
 					</p>
 				</animated.div>
 
-				<QuoteCard.Actions className="justify-center">
+				<QuoteCard.Actions className="items-center justify-center">
 					<GetQuote />
+
+					<Button
+						className="btn-md btn-outline"
+						icon={!isFavorited ? <HiOutlineStar /> : <HiStar />}
+						onClick={toggleFavorite}
+					>
+						Save{isFavorited ? 'd' : ''}
+					</Button>
 				</QuoteCard.Actions>
 			</QuoteCard.Body>
 		</QuoteCard>

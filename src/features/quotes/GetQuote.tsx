@@ -10,7 +10,7 @@ const GetQuote = () => {
 	return (
 		<Button
 			type="primary"
-			className="btn-lg"
+			className="btn-md"
 			icon={!isLoading ? <HiSun /> : <Spinner />}
 			disabled={isLoading}
 			onClick={getRandomQuote}
