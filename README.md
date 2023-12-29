@@ -6,9 +6,8 @@ Whether you're looking for a daily dose of motivation or a powerful statement to
 
 Get ready to be inspired!
 
-## Features
+## What does it do?
 
--   Inspiring Quotes
--   Favorite / Share quote
--   More from author
--   What are you feeling? (Tags)
+1.  Generate random quotes
+2.  Save quotes
+3.  Share quotes

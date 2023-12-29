@@ -7,6 +7,4 @@ export default interface Quote {
 		slug: string;
 	};
 	tags: string[];
-
-	dateAdded: Date;
 }

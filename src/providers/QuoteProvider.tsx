@@ -1,5 +1,5 @@
-import { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
-import { getRandomQuote as getRandomQuoteApi, getTags } from '../services/quotes';
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { getQuotes as getQuotesApi, getRandomQuote as getRandomQuoteApi, getTags } from '../services/quotes';
 import Quote from '../types/quote';
 import Tag from '../types/tag';
 import { getRandomValue } from '../utils/helpers';
@@ -7,56 +7,69 @@ import { getRandomValue } from '../utils/helpers';
 type QuoteContextType = {
 	isLoading: boolean;
 	quote: Quote | null;
+	relatedQuotes: Quote[];
 	tags: Tag[];
-	getRandomQuote: () => void;
-	getQuotesByTag: (tag: string) => void;
+	getQuotes: (options?: { author?: string }) => void;
+	getRandomQuote: (options?: { tag?: string }) => void;
+	clearRelatedQuotes: () => void;
 };
 
 const QuoteContext = createContext<QuoteContextType | null>(null);
 
 export function QuoteProvider({ children }: { children: ReactNode }): ReactNode {
-	const [quote, setQuote] = useState<Quote | null>(null);
-	const [tags, setTags] = useState<Tag[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const selectedTag = useRef<string>('');
+	const [quote, setQuote] = useState<Quote | null>(null);
+	const [relatedQuotes, setRelatedQuotes] = useState<Quote[]>([]);
+	const [tags, setTags] = useState<Tag[]>([]);
 
-	async function getRandomQuote() {
+	async function getQuotes(opts: { author?: string } = {}) {
 		try {
-			setIsLoading(true);
-			const data = await getRandomQuoteApi({ tag: selectedTag.current });
-			setQuote(data);
-		} finally {
-			setIsLoading(false);
-			selectedTag.current = '';
+			const data = await getQuotesApi(opts);
+			setRelatedQuotes(data);
+		} catch {
+			// do nothing
 		}
 	}
 
-	function getQuotesByTag(tag: string) {
-		selectedTag.current = tag;
-		getRandomQuote();
+	async function getRandomQuote(opts: { tag?: string } = {}) {
+		try {
+			setIsLoading(true);
+			const data = await getRandomQuoteApi(opts);
+			setQuote(data);
+		} finally {
+			setIsLoading(false);
+		}
+	}
+
+	async function getRandomTags() {
+		const tags = await getTags();
+		const randomTags = Array.from({ length: 3 }, () => getRandomValue(tags));
+		setTags(randomTags);
+	}
+
+	function clearRelatedQuotes() {
+		setRelatedQuotes([]);
 	}
 
 	useEffect(() => {
-		(async function () {
-			const tags = await getTags();
-			const randomTags = Array.from({ length: 3 }, () => getRandomValue(tags));
-			setTags(randomTags);
-		})();
+		getRandomQuote();
+		getRandomTags();
 	}, []);
 
-	return (
-		<QuoteContext.Provider
-			value={{
-				isLoading,
-				quote,
-				tags,
-				getRandomQuote,
-				getQuotesByTag: getQuotesByTag,
-			}}
-		>
-			{children}
-		</QuoteContext.Provider>
+	const value = useMemo<QuoteContextType>(
+		() => ({
+			isLoading,
+			quote,
+			relatedQuotes,
+			tags,
+			getQuotes,
+			getRandomQuote,
+			clearRelatedQuotes,
+		}),
+		[isLoading, quote, tags, relatedQuotes]
 	);
+
+	return <QuoteContext.Provider value={value}>{children}</QuoteContext.Provider>;
 }
 
 export function useQuote() {

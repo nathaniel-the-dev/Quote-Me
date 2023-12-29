@@ -1,6 +1,6 @@
 import DisplayQuote from './features/quotes/DisplayQuote';
-import GetQuote from './features/quotes/GetQuote';
-import TagList from './features/tags/TagList';
+import RelatedQuotes from './features/quotes/RelatedQuotes';
+import DisplayTags from './features/tags/DisplayTags';
 import { QuoteProvider } from './providers/QuoteProvider';
 import Heading from './ui/Heading';
 import Main from './ui/Main';
@@ -12,9 +12,9 @@ export default function App() {
 
 			<QuoteProvider>
 				<DisplayQuote />
-				<GetQuote />
+				<DisplayTags />
 
-				<TagList />
+				<RelatedQuotes />
 			</QuoteProvider>
 		</Main>
 	);

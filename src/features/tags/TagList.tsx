@@ -1,24 +1,14 @@
-import { useQuote } from '../../providers/QuoteProvider';
+import { memo } from 'react';
+import Tag from '../../types/tag';
 import TagItem from './TagItem';
 
-const TagList = () => {
-	const { tags, getQuotesByTag } = useQuote();
-
+const TagList = ({ tags, onClick }: { tags: Tag[]; onClick: (slug: string) => void }) => {
 	return (
-		<div className="p-4">
-			<h4 className="mb-2">What do you need today?</h4>
-
-			<ul className="flex items-center w-fit mx-auto gap-4">
-				{tags.map((tag, i) => (
-					<TagItem
-						key={tag._id}
-						position={i}
-						name={'#' + tag.slug}
-						onClick={() => getQuotesByTag(tag.slug)}
-					/>
-				))}
-			</ul>
-		</div>
+		<ul className="w-fit flex items-center gap-4 mx-auto">
+			{tags.map((tag, i) => (
+				<TagItem key={tag._id + i} position={i} name={tag.slug} onClick={() => onClick(tag.slug)} />
+			))}
+		</ul>
 	);
 };
-export default TagList;
+export default memo(TagList);

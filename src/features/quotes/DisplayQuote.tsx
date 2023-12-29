@@ -1,31 +1,41 @@
-import { useSpring, animated } from '@react-spring/web';
+import { animated } from '@react-spring/web';
 import { useQuote } from '../../providers/QuoteProvider';
+import GetQuote from './GetQuote';
+import QuoteCard from '../../ui/QuoteCard';
+import { useQuoteAnimation } from './useQuoteAnimation';
 
 const DisplayQuote = () => {
-	const { quote } = useQuote();
-	const [spring] = useSpring(
-		() => ({
-			from: { opacity: 0, scale: 0 },
-			to: { opacity: 1, scale: 1 },
-			config: { duration: 1000, easing: [0.5, 0, 0.5, 1] },
-		}),
-		[quote]
-	);
+	const { quote, getQuotes } = useQuote();
+	const { style } = useQuoteAnimation(quote);
 
 	if (!quote) return null;
 
+	const getQuotesByAuthor = () => {
+		getQuotes({ author: quote.author.slug });
+	};
+
 	return (
-		<section className="py-20">
-			<animated.blockquote
-				className="card max-w-prose w-full mx-auto bg-neutral text-neutral-content"
-				style={spring}
-			>
-				<div className="card-body items-center text-center">
+		<QuoteCard>
+			<QuoteCard.Body className="items-center gap-8 overflow-hidden text-center">
+				<animated.div style={style}>
 					<h2 className="card-title text-pretty mb-4">&quot;{quote.text}&quot;</h2>
-					<p className="text-gray-300">{quote.author.name}</p>
-				</div>
-			</animated.blockquote>
-		</section>
+					<p className="grow-0 dark:text-gray-300">
+						<span
+							className="tooltip tooltip-bottom tooltip-secondary"
+							data-tip={`More from ${quote.author.name}`}
+						>
+							<a className="link no-underline" onClick={getQuotesByAuthor}>
+								{quote.author.name}
+							</a>
+						</span>
+					</p>
+				</animated.div>
+
+				<QuoteCard.Actions className="justify-center">
+					<GetQuote />
+				</QuoteCard.Actions>
+			</QuoteCard.Body>
+		</QuoteCard>
 	);
 };
 export default DisplayQuote;
