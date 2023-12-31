@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { getQuotes as getQuotesApi, getRandomQuote as getRandomQuoteApi, getTags } from '../services/quotes';
+import { getQuoteById, getRandomQuote as getRandomQuoteApi, getTags } from '../services/quotes';
 import Quote from '../types/quote';
 import Tag from '../types/tag';
 import { getRandomValue } from '../utils/helpers';
@@ -7,11 +7,11 @@ import { getRandomValue } from '../utils/helpers';
 type QuoteContextType = {
 	isLoading: boolean;
 	quote: Quote | null;
-	relatedQuotes: Quote[];
 	tags: Tag[];
-	getQuotes: (options?: { author?: string }) => void;
 	getRandomQuote: (options?: { tag?: string }) => void;
-	clearRelatedQuotes: () => void;
+
+	openShareModal: boolean;
+	toggleShareModal: () => void;
 };
 
 const QuoteContext = createContext<QuoteContextType | null>(null);
@@ -19,17 +19,8 @@ const QuoteContext = createContext<QuoteContextType | null>(null);
 export function QuoteProvider({ children }: { children: ReactNode }): ReactNode {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [quote, setQuote] = useState<Quote | null>(null);
-	const [relatedQuotes, setRelatedQuotes] = useState<Quote[]>([]);
 	const [tags, setTags] = useState<Tag[]>([]);
-
-	async function getQuotes(opts: { author?: string } = {}) {
-		try {
-			const data = await getQuotesApi(opts);
-			setRelatedQuotes(data);
-		} catch {
-			// do nothing
-		}
-	}
+	const [openShareModal, setOpenShareModal] = useState<boolean>(false);
 
 	async function getRandomQuote(opts: { tag?: string } = {}) {
 		try {
@@ -47,12 +38,22 @@ export function QuoteProvider({ children }: { children: ReactNode }): ReactNode 
 		setTags(randomTags);
 	}
 
-	function clearRelatedQuotes() {
-		setRelatedQuotes([]);
+	async function getQuoteFromUrl(quoteId: string) {
+		const data = await getQuoteById(quoteId);
+		setQuote(data);
+	}
+
+	function toggleShareModal() {
+		setOpenShareModal((mode) => !mode);
 	}
 
 	useEffect(() => {
-		getRandomQuote();
+		const url = new URLSearchParams(window.location.search);
+		const quoteId = url.get('id');
+
+		if (quoteId) getQuoteFromUrl(quoteId);
+		else getRandomQuote();
+
 		getRandomTags();
 	}, []);
 
@@ -60,13 +61,14 @@ export function QuoteProvider({ children }: { children: ReactNode }): ReactNode 
 		() => ({
 			isLoading,
 			quote,
-			relatedQuotes,
-			tags,
-			getQuotes,
 			getRandomQuote,
-			clearRelatedQuotes,
+
+			tags,
+
+			openShareModal,
+			toggleShareModal,
 		}),
-		[isLoading, quote, tags, relatedQuotes]
+		[isLoading, quote, tags, openShareModal]
 	);
 
 	return <QuoteContext.Provider value={value}>{children}</QuoteContext.Provider>;

@@ -8,7 +8,7 @@ const DisplayTags = () => {
 
 	if (!tags.length) return null;
 	return (
-		<div className="mt-8">
+		<div className="mt-8 text-center">
 			<h4 className="mb-4">What do you need today?</h4>
 			<TagList tags={tags} onClick={handleClick} />
 		</div>

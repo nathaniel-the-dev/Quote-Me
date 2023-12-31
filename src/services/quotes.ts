@@ -11,17 +11,14 @@ const formatQuote = (data: any) => ({
 	tags: data.tags,
 });
 
-export async function getQuotes(opts?: { author?: string }) {
+export async function getQuoteById(id: string) {
 	try {
-		const params = new URLSearchParams();
-		if (opts?.author) params.append('author', opts.author);
-
-		const urlWithParams = `${API_URL}/quotes?limit=5${params.toString() ? `&${params.toString()}` : ''}`;
+		const urlWithParams = `${API_URL}/quotes/${id}`;
 
 		const response = await fetch(urlWithParams);
 		const data = await response.json();
 
-		return data.results.map(formatQuote);
+		return data ? formatQuote(data) : null;
 	} catch (error) {
 		console.error(error);
 		throw new Error('Failed to fetch quotes');
