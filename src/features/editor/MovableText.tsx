@@ -14,12 +14,12 @@ const MovableText = ({ text, options, textRef, canvasSize, onUpdate }: Props) =>
 	const [textSelected, setTextSelected] = useState(false);
 	const trRef = useRef<any>(null);
 
-	const textProperties = {
-		x: canvasSize.width / 2 - (options.padding || 0) / 2 - (options.width || 0) / 2,
-		y: canvasSize.height / 4 - (options.padding || 0) / 2,
+	const textProperties = useRef({
+		x: canvasSize.width / 2 - (Number(options.width) + Number(options.padding) || 0) / 2,
+		y: canvasSize.height / 2 - (Number(options.height) + Number(options.padding) || 0) / 2,
 
 		minWidth: 20,
-	};
+	});
 
 	function onTextSelected() {
 		setTextSelected((prev) => !prev);
@@ -31,6 +31,18 @@ const MovableText = ({ text, options, textRef, canvasSize, onUpdate }: Props) =>
 			x: e.target.x(),
 			y: e.target.y(),
 		}));
+	}
+
+	function onDragMove(e: any) {
+		// Set drag bounds
+		const dragBounds = {
+			top: 0,
+			right: canvasSize.width - textRef.current.width(),
+			bottom: canvasSize.height - textRef.current.width(),
+			left: 0,
+		};
+
+		trRef.current.x(Math.max(dragBounds.left, Math.min(dragBounds.right, e.target.x())));
 	}
 
 	function onTextTransformEnd() {
@@ -50,7 +62,7 @@ const MovableText = ({ text, options, textRef, canvasSize, onUpdate }: Props) =>
 			x: node.x(),
 			y: node.y(),
 			// set minimal value
-			width: Math.max(node.width() * scaleX, textProperties.minWidth),
+			width: Math.max(node.width() * scaleX, textProperties.current.minWidth),
 			height: Math.max(node.height() * scaleY),
 		}));
 	}
@@ -64,17 +76,32 @@ const MovableText = ({ text, options, textRef, canvasSize, onUpdate }: Props) =>
 	return (
 		<>
 			<Group>
-				<Rect
-					x={textRef.current?.x()}
-					y={textRef.current?.y()}
-					width={textRef.current?.width()}
-					height={textRef.current?.height()}
-					fill="white"
-					stroke="white"
-					strokeWidth={20}
-					opacity={0.5}
+				{textRef.current && (
+					<Rect
+						x={textRef.current.x()}
+						y={textRef.current.y()}
+						width={textRef.current.width()}
+						height={textRef.current.height()}
+						fill="white"
+						stroke="white"
+						strokeWidth={20}
+						opacity={0.5}
+					/>
+				)}
+				<Text
+					id="quote-text"
+					text={text}
+					{...options}
+					ref={textRef}
+					x={textProperties.current.x}
+					y={textProperties.current.y}
+					onClick={onTextSelected}
+					onTap={onTextSelected}
+					onDragMove={onDragMove}
+					onDragEnd={onTextDragEnd}
+					onTransformEnd={onTextTransformEnd}
+					draggable
 				/>
-				<Text id="quote-text" text={text} x={textProperties.x} y={textProperties.y} {...options} />
 			</Group>
 			<Transformer
 				ref={trRef}
@@ -82,7 +109,7 @@ const MovableText = ({ text, options, textRef, canvasSize, onUpdate }: Props) =>
 				rotateEnabled={false}
 				boundBoxFunc={(oldBox, newBox) => {
 					// set minimal width
-					return Math.abs(newBox.width) < textProperties.minWidth ? oldBox : newBox;
+					return Math.abs(newBox.width) < textProperties.current.minWidth ? oldBox : newBox;
 				}}
 			/>
 		</>

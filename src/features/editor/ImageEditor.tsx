@@ -31,11 +31,11 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 	const quoteText = `"${data.quote?.text || 'Hello World'}"\n\n - ${data.quote?.author?.name || 'Anonymous'}`;
 	const [options, setOptions] = useState<TextConfig>({
 		// Text options
-		x: 0,
-		y: 0,
+		x: undefined,
+		y: undefined,
 
-		width: 0,
-		height: 0,
+		width: undefined,
+		height: undefined,
 
 		fill: 'black',
 		fontSize: 18,
@@ -81,6 +81,7 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 						})
 					)
 				);
+
 				setBgImages(results);
 				setSelectedImage(results[0]);
 
@@ -115,7 +116,13 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 					<div id="editor" className="col-span-2" ref={modalBox}>
 						<Stage className="size-full" width={canvasSize.width} height={canvasSize.height}>
 							<Layer>
-								<Image image={selectedImage} x={0} y={0} />
+								<Image
+									image={selectedImage}
+									x={0}
+									y={0}
+									width={canvasSize.width}
+									height={canvasSize.height}
+								/>
 							</Layer>
 							<Layer>
 								<MovableText
@@ -220,7 +227,7 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 											{/* Font Family */}
 											<div className="form-control">
 												<label className="label" htmlFor="fontFamily">
-													Font
+													Font Family
 												</label>
 												<select
 													className="select select-sm select-bordered"
@@ -253,6 +260,27 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 														}))
 													}
 												/>
+											</div>
+
+											{/* Text Align */}
+											<div className="form-control">
+												<label className="label" htmlFor="textAlign">
+													Text Align
+												</label>
+												<select
+													className="select select-sm select-bordered"
+													name="textAlign"
+													id="textAlign"
+													defaultValue={options.align}
+													onChange={(e) =>
+														setOptions((prev) => ({ ...prev, align: e.target.value }))
+													}
+												>
+													<option value="left">Left</option>
+													<option value="center">Center</option>
+													<option value="right">Right</option>
+													<option value="justify">Justify</option>
+												</select>
 											</div>
 										</div>
 									</section>
