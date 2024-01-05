@@ -12,19 +12,21 @@
   "dependencies": {
     "@react-spring/web": "^9.7.3",
     "chroma-js": "^2.4.2",
+    "fabric": "^5.3.0",
+    "fabricjs-react": "^1.2.1",
     "konva": "^9.3.0",
     "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.12",
     "react-icons": "^4.12.0",
-    "react-konva": "^18.2.10",
     "react-share": "^5.0.3",
     "swiper": "^11.0.5",
     "unsplash-js": "^7.0.19"
   },
   "devDependencies": {
     "@types/chroma-js": "^2.4.3",
+    "@types/fabric": "^5.3.6",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
