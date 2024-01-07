@@ -1,30 +1,61 @@
 import { fabric } from 'fabric';
 import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-const EditorDisplay = ({ selectedImage, quoteText, options, modalBox }: any) => {
-	const textMaxWidth = (modalBox.current?.clientWidth || 0) * 0.75;
-
+const EditorDisplay = ({ canvasRef, selectedImage, quoteText, textOptions }: any) => {
 	const { editor, onReady } = useFabricJSEditor();
+	const isReady = useRef(false);
+
+	function onCanvasReady(canvas: fabric.Canvas) {
+		isReady.current = true;
+		canvasRef.current = canvas;
+		onReady(canvas);
+	}
 
 	useEffect(() => {
-		editor?.canvas.setDimensions({ width: modalBox.current?.clientWidth, height: modalBox.current?.clientHeight });
+		if (!editor || !isReady.current) return;
 
-		var rect = new fabric.Rect({
-			left: 100,
-			top: 100,
-			fill: 'red',
-			width: 20,
-			height: 20,
-		});
+		const existingText = editor.canvas.getObjects('textbox')[0];
+		if (existingText?.name === 'quote') {
+			existingText.setOptions(textOptions);
+			editor.canvas.requestRenderAll();
+		} else {
+			const text = new fabric.Textbox(quoteText, {
+				name: 'quote',
+				width: editor.canvas.width! * 0.75,
+				originX: 'center',
+				originY: 'center',
+				lockRotation: true,
+				editable: false,
 
-		// "add" rectangle onto canvas
-		editor?.canvas.add(rect);
-	}, [fabric, editor, modalBox]);
+				...editor.canvas.getCenter(),
+				...textOptions,
+			});
+
+			editor.canvas.add(text);
+		}
+	}, [textOptions]);
+
+	useEffect(() => {
+		if (!editor || !isReady.current) return;
+
+		if (selectedImage) {
+			const bgImage = new fabric.Image(selectedImage, {
+				name: 'bgImage',
+				left: 0,
+				top: 0,
+				width: editor.canvas.width,
+				height: editor.canvas.height,
+			});
+			editor.canvas.setBackgroundImage(bgImage, () => editor.canvas.renderAll());
+		} else {
+			editor.canvas.setBackgroundColor('white', () => editor.canvas.renderAll());
+		}
+	}, [selectedImage]);
 
 	return (
-		<div id="editor" className="col-span-2" ref={modalBox}>
-			<FabricJSCanvas onReady={onReady} />
+		<div id="editor" className="col-span-2">
+			<FabricJSCanvas onReady={onCanvasReady} className="size-full" />
 		</div>
 	);
 };

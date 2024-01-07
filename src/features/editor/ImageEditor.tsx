@@ -1,33 +1,56 @@
-import { useRef, useState } from 'react';
+// @ts-ignore-unused
+import ColorThief from 'colorthief';
+import chroma from 'chroma-js';
+import { useEffect, useRef, useState } from 'react';
 import { HiXMark } from 'react-icons/hi2';
 
 import EditorDisplay from './EditorDisplay';
 import EditorControls from './EditorControls';
 
 const ImageEditor = ({ data, show, onClose }: any) => {
-	const modalBox = useRef<HTMLDivElement>(null);
-
+	const canvas = useRef<fabric.Canvas>(null);
 	const quoteText = `"${data.quote?.text || 'Hello World'}"\n\n - ${data.quote?.author?.name || 'Anonymous'}`;
-	const [options, setOptions] = useState({
-		// Text options
+
+	const [selectedImage, setSelectedImage] = useState<HTMLImageElement | undefined>(undefined);
+	const [textOptions, setTextOptions] = useState({
 		fill: 'black',
-		fontSize: 18,
+		fontSize: 16,
+		fontWeight: 'normal',
 		fontFamily: 'Inter',
-		align: 'center',
-		padding: 20,
+		textAlign: 'center',
 		lineHeight: 1.2,
 	});
+
+	function onUpdate({ field, data }: any) {
+		if (field === 'image') {
+			setSelectedImage(data);
+		}
+
+		if (field === 'text') {
+			setTextOptions((prev) => ({ ...prev, ...data }));
+		}
+	}
 
 	function onSave(e: any) {
 		e.preventDefault();
 
-		// const url = stageRef.current?.getStage().toDataURL();
+		const url = canvas.current?.toDataURL({ format: 'png', quality: 1 });
+		if (!url) return;
 
 		const link = document.createElement('a');
-		// link.href = url;
+		link.href = url;
 		link.download = 'quote.png';
 		link.click();
+		link.remove();
 	}
+
+	useEffect(() => {
+		if (!selectedImage) return;
+
+		const dominantColor = new ColorThief().getColor(selectedImage);
+		const luminance = chroma(dominantColor).luminance();
+		onUpdate({ field: 'text', data: { fill: luminance > 0.3 ? 'black' : 'white' } });
+	}, [selectedImage]);
 
 	return (
 		<dialog className="modal backdrop-blur-sm bg-black bg-opacity-50" open={show} onClose={onClose}>
@@ -39,8 +62,19 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 				</form>
 
 				<div className="grid h-full grid-cols-3 gap-4">
-					<EditorDisplay />
-					<EditorControls />
+					<EditorDisplay
+						canvasRef={canvas}
+						selectedImage={selectedImage}
+						quoteText={quoteText}
+						textOptions={textOptions}
+					/>
+					<EditorControls
+						selectedImage={selectedImage}
+						textOptions={textOptions}
+						onUpdate={onUpdate}
+						onSave={onSave}
+						onClose={onClose}
+					/>
 				</div>
 			</div>
 		</dialog>

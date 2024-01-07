@@ -1,42 +1,31 @@
-import chroma from 'chroma-js';
 import { createApi } from 'unsplash-js';
-import { HiArrowUpTray } from 'react-icons/hi2';
+import { HiArrowUpTray, HiFolderArrowDown } from 'react-icons/hi2';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useEffect, useRef, useState } from 'react';
+
 import { loadImage } from '../../utils/helpers';
 
 const unsplash = createApi({
 	accessKey: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
 });
 
-const EditorControls = ({ options, setOptions, onClose }: any) => {
+const EditorControls = ({ selectedImage, textOptions, onUpdate, onSave, onClose }: any) => {
 	const carouselContainer = useRef<HTMLDivElement>(null);
-	const [activePanel, setActivePanel] = useState(0);
-	const [bgImages, setBgImages] = useState<any[]>([]);
-	const [selectedImage, setSelectedImage] = useState<HTMLImageElement | undefined>(undefined);
 	const carouselWidth = carouselContainer.current?.offsetWidth || 0;
 
-	function onSave(e: any) {
-		e.preventDefault();
-
-		// const url = stageRef.current?.getStage().toDataURL();
-
-		const link = document.createElement('a');
-		// link.href = url;
-		link.download = 'quote.png';
-		link.click();
-	}
+	const [activePanel, setActivePanel] = useState(0);
+	const [bgImages, setBgImages] = useState<any[]>([]);
 
 	function onFileChange(e: any) {
 		if (!e.target.files || e.target.files.length === 0) {
-			setSelectedImage(bgImages[0]);
+			onUpdate({ field: 'image', data: bgImages[0] });
 			return;
 		}
 		const reader = new FileReader();
 		reader.onload = async (event: any) => {
 			const result = await loadImage(event.target.result);
-			setSelectedImage(result);
+			onUpdate({ field: 'image', data: result });
 		};
 		reader.readAsDataURL(e.target.files[0]);
 	}
@@ -54,13 +43,7 @@ const EditorControls = ({ options, setOptions, onClose }: any) => {
 				const results = await Promise.all(response.map((image) => loadImage(image.urls.regular)));
 
 				setBgImages(results);
-				setSelectedImage(results[0]);
-
-				// Add text to image
-				const color = chroma(response[0].color);
-				const luminance = color.luminance();
-
-				// setOptions((prev:any) => ({ ...prev, textColor: luminance > 0.5 ? 'black' : 'white' }));
+				onUpdate({ field: 'image', data: results[0] });
 			}
 		})();
 	}, []);
@@ -106,7 +89,7 @@ const EditorControls = ({ options, setOptions, onClose }: any) => {
 													? ' border-2 border-primary'
 													: '')
 											}
-											onClick={() => setSelectedImage(image)}
+											onClick={() => onUpdate({ field: 'image', data: image })}
 										>
 											<img
 												src={image.src}
@@ -163,9 +146,9 @@ const EditorControls = ({ options, setOptions, onClose }: any) => {
 										className="select select-sm select-bordered"
 										name="fontFamily"
 										id="fontFamily"
-										defaultValue={options.fontFamily}
+										defaultValue={textOptions.fontFamily}
 										onChange={(e) =>
-											setOptions((prev: any) => ({ ...prev, fontFamily: e.target.value }))
+											onUpdate({ field: 'text', data: { fontFamily: e.target.value } })
 										}
 									>
 										<option value="Inter">Inter</option>
@@ -182,12 +165,9 @@ const EditorControls = ({ options, setOptions, onClose }: any) => {
 										type="number"
 										name="fontSize"
 										id="fontSize"
-										defaultValue={options.fontSize}
+										defaultValue={textOptions.fontSize}
 										onChange={(e) =>
-											setOptions((prev: any) => ({
-												...prev,
-												fontSize: Number(e.target.value),
-											}))
+											onUpdate({ field: 'text', data: { fontSize: e.target.value } })
 										}
 									/>
 								</div>
@@ -201,9 +181,9 @@ const EditorControls = ({ options, setOptions, onClose }: any) => {
 										className="select select-sm select-bordered"
 										name="textAlign"
 										id="textAlign"
-										defaultValue={options.align}
+										defaultValue={textOptions.textAlign}
 										onChange={(e) =>
-											setOptions((prev: any) => ({ ...prev, align: e.target.value }))
+											onUpdate({ field: 'text', data: { textAlign: e.target.value } })
 										}
 									>
 										<option value="left">Left</option>
@@ -221,7 +201,8 @@ const EditorControls = ({ options, setOptions, onClose }: any) => {
 			<div className="modal-action bg-neutral-700 sticky bottom-0 left-0 p-2 mt-12 bg-opacity-50 rounded">
 				<form method="dialog">
 					<button className="btn btn-primary mr-2" onClick={onSave}>
-						Save
+						<HiFolderArrowDown />
+						Export
 					</button>
 
 					<button className="btn btn-ghost" onClick={onClose}>

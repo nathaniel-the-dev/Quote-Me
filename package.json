@@ -12,10 +12,9 @@
   "dependencies": {
     "@react-spring/web": "^9.7.3",
     "chroma-js": "^2.4.2",
+    "colorthief": "^2.4.0",
     "fabric": "^5.3.0",
     "fabricjs-react": "^1.2.1",
-    "konva": "^9.3.0",
-    "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.12",
