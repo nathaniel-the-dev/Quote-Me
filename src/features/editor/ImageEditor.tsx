@@ -1,4 +1,4 @@
-// @ts-ignore-unused
+// @ts-ignore
 import ColorThief from 'colorthief';
 import chroma from 'chroma-js';
 import { useEffect, useRef, useState } from 'react';
@@ -14,7 +14,7 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 	const [selectedImage, setSelectedImage] = useState<HTMLImageElement | undefined>(undefined);
 	const [textOptions, setTextOptions] = useState({
 		fill: 'black',
-		fontSize: 16,
+		fontSize: 24,
 		fontWeight: 'normal',
 		fontFamily: 'Inter',
 		textAlign: 'center',
@@ -49,7 +49,7 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 
 		const dominantColor = new ColorThief().getColor(selectedImage);
 		const luminance = chroma(dominantColor).luminance();
-		onUpdate({ field: 'text', data: { fill: luminance > 0.3 ? 'black' : 'white' } });
+		onUpdate({ field: 'text', data: { fill: luminance > 0.33 ? 'black' : 'white' } });
 	}, [selectedImage]);
 
 	return (

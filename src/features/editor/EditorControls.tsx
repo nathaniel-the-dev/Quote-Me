@@ -1,10 +1,12 @@
 import { createApi } from 'unsplash-js';
-import { HiArrowUpTray, HiFolderArrowDown } from 'react-icons/hi2';
+import { HiArrowUpTray, HiOutlineFolderArrowDown } from 'react-icons/hi2';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useEffect, useRef, useState } from 'react';
 
-import { loadImage } from '../../utils/helpers';
+import { debounce, loadImage } from '@/utils/helpers';
+import Select from '@/ui/Select';
+import Input from '@/ui/Input';
 
 const unsplash = createApi({
 	accessKey: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
@@ -16,6 +18,10 @@ const EditorControls = ({ selectedImage, textOptions, onUpdate, onSave, onClose 
 
 	const [activePanel, setActivePanel] = useState(0);
 	const [bgImages, setBgImages] = useState<any[]>([]);
+
+	function onInputChange(field: string, delay = 0) {
+		return debounce((e: any) => onUpdate({ field: 'text', data: { [field]: e.target.value } }), delay);
+	}
 
 	function onFileChange(e: any) {
 		if (!e.target.files || e.target.files.length === 0) {
@@ -34,7 +40,7 @@ const EditorControls = ({ selectedImage, textOptions, onUpdate, onSave, onClose 
 		(async function () {
 			// Get background images from unsplash
 			const random = await unsplash.photos.getRandom({
-				query: `pattern,background`,
+				query: `inspirational pattern background`,
 				orientation: 'squarish',
 				count: 10,
 			});
@@ -138,70 +144,62 @@ const EditorControls = ({ selectedImage, textOptions, onUpdate, onSave, onClose 
 						<section className="grow">
 							<div className="flex flex-col h-full gap-3">
 								{/* Font Family */}
-								<div className="form-control">
-									<label className="label" htmlFor="fontFamily">
-										Font Family
-									</label>
-									<select
-										className="select select-sm select-bordered"
-										name="fontFamily"
-										id="fontFamily"
-										defaultValue={textOptions.fontFamily}
-										onChange={(e) =>
-											onUpdate({ field: 'text', data: { fontFamily: e.target.value } })
-										}
-									>
-										<option value="Inter">Inter</option>
-									</select>
-								</div>
+								<Select
+									label="Font Family"
+									options={[{ value: 'Inter', label: 'Inter' }]}
+									value={textOptions.fontFamily}
+									onChange={onInputChange('fontFamily')}
+								/>
+
+								{/* Text Color */}
+								<Input
+									label="Text Color"
+									type="color"
+									value={textOptions.fill}
+									onChange={onInputChange('fill', 300)}
+								/>
 
 								{/* Font Size */}
-								<div className="form-control">
-									<label className="label" htmlFor="fontSize">
-										Font Size
-									</label>
-									<input
-										className="input input-sm input-bordered"
-										type="number"
-										name="fontSize"
-										id="fontSize"
-										defaultValue={textOptions.fontSize}
-										onChange={(e) =>
-											onUpdate({ field: 'text', data: { fontSize: e.target.value } })
-										}
-									/>
-								</div>
+								<Input
+									label="Font Size"
+									type="number"
+									value={textOptions.fontSize}
+									onChange={onInputChange('fontSize')}
+								/>
 
 								{/* Text Align */}
-								<div className="form-control">
-									<label className="label" htmlFor="textAlign">
-										Text Align
-									</label>
-									<select
-										className="select select-sm select-bordered"
-										name="textAlign"
-										id="textAlign"
-										defaultValue={textOptions.textAlign}
-										onChange={(e) =>
-											onUpdate({ field: 'text', data: { textAlign: e.target.value } })
-										}
-									>
-										<option value="left">Left</option>
-										<option value="center">Center</option>
-										<option value="right">Right</option>
-										<option value="justify">Justify</option>
-									</select>
-								</div>
+								<Select
+									label="Text Align"
+									options={[
+										{ value: 'left', label: 'Left' },
+										{ value: 'center', label: 'Center' },
+										{ value: 'right', label: 'Right' },
+										{ value: 'justify', label: 'Justify' },
+									]}
+									value={textOptions.textAlign}
+									onChange={onInputChange('textAlign')}
+								/>
+
+								{/* Font Weight */}
+								<Select
+									label="Font Weight"
+									options={[
+										{ value: 'normal', label: 'Normal' },
+										{ value: 'bold', label: 'Bold' },
+									]}
+									value={textOptions.fontWeight}
+									onChange={onInputChange('fontWeight')}
+								/>
 							</div>
 						</section>
 					</div>
 				</div>
 			</div>
 
-			<div className="modal-action bg-neutral-700 sticky bottom-0 left-0 p-2 mt-12 bg-opacity-50 rounded">
+			<div className="modal-action sticky bottom-0 left-0 p-2 mt-12 bg-opacity-50 rounded">
 				<form method="dialog">
 					<button className="btn btn-primary mr-2" onClick={onSave}>
-						<HiFolderArrowDown />
+						<HiOutlineFolderArrowDown />
 						Export
 					</button>
 

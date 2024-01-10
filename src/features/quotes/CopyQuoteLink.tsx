@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { HiDocumentDuplicate, HiCheck } from 'react-icons/hi2';
-import Button from '../../ui/Button';
-import { copyToClipBoard } from '../../utils/helpers';
+import Button from '@/ui/Button';
+import { copyToClipBoard } from '@/utils/helpers';
 
 const CopyQuoteLink = ({ shareUrl }: { shareUrl: string }) => {
 	const [copied, setCopied] = useState(false);

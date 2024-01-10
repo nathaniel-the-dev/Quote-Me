@@ -53,7 +53,15 @@ export async function getTags() {
 			.filter((tag: any) => tag.quoteCount > 2)
 			.map((tag: any) => ({ _id: tag._id, name: tag.name, slug: tag.slug }));
 
-		return tags;
+		const uniqueTags = tags.reduce((acc: any[], tag: any) => {
+			const isDuplicate = acc.some((accTag) => accTag.slug === tag.slug);
+			if (!isDuplicate) {
+				acc.push(tag);
+			}
+			return acc;
+		}, []);
+
+		return uniqueTags;
 	} catch (error) {
 		console.error(error);
 		throw new Error('Failed to fetch tags');

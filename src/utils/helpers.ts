@@ -19,3 +19,16 @@ export function loadImage(src: string, options: any = {}): Promise<HTMLImageElem
 		image.onload = () => resolve(image);
 	});
 }
+
+export function debounce(fn: any, timeout = 300) {
+	let timer: ReturnType<typeof setTimeout> | null = null;
+	return (...args: any) => {
+		if (timer) {
+			clearTimeout(timer);
+		}
+		timer = setTimeout(() => {
+			fn.apply(this, args);
+			timer = null;
+		}, timeout);
+	};
+}

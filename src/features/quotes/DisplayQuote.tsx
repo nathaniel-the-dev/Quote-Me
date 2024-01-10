@@ -21,7 +21,7 @@ const DisplayQuote = () => {
 						<h2 className="card-title text-pretty mb-4">&quot;{quote.text}&quot;</h2>
 						<p className="grow-0 dark:text-gray-200">
 							<span
-								className="tooltip tooltip-bottom tooltip-secondary"
+								className="tooltip tooltip-top tooltip-secondary"
 								data-tip={`Who is ${quote.author.name}?`}
 							>
 								<a
