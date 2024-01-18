@@ -13,6 +13,17 @@ const EditorDisplay = ({ canvasRef, selectedImage, quoteText, textOptions }: any
 	}
 
 	useEffect(() => {
+		if (quoteText && editor && isReady.current) {
+			const existingText = editor.canvas.getObjects('textbox')[0] as fabric.Textbox;
+			console.log(existingText);
+			if (existingText?.name === 'quote') {
+				existingText.set('text', quoteText);
+				// editor.canvas.requestRenderAll();
+			}
+		}
+	}, [quoteText]);
+
+	useEffect(() => {
 		if (!editor || !isReady.current) return;
 
 		const existingText = editor.canvas.getObjects('textbox')[0];

@@ -1,3 +1,5 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -12,12 +14,30 @@ export default {
 				'2xl': '6rem',
 			},
 		},
-		extend: {},
+		extend: {
+			fontFamily: {
+				inter: ['Inter', ...defaultTheme.fontFamily.sans],
+			},
+		},
 	},
 	plugins: [require('daisyui')],
 
 	daisyui: {
-		themes: ['garden', 'forest'],
-		darkTheme: 'forest',
+		themes: [
+			{
+				custom: {
+					primary: '#89CFF0',
+					secondary: '#E6E6E6',
+					accent: '#A2D9A4',
+
+					neutral: '#31252a',
+					'base-100': '#fcfcfc',
+					info: '#009ad2',
+					success: '#00a452',
+					warning: '#fac000',
+					error: '#ff0034',
+				},
+			},
+		],
 	},
 };

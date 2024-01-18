@@ -7,7 +7,10 @@ import Main from './ui/Main';
 export default function App() {
 	return (
 		<Main>
-			<Heading>Quote Me!</Heading>
+			<Heading className="mb-8">
+				<span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">Inspire</span>{' '}
+				Me!
+			</Heading>
 
 			<QuoteProvider>
 				<DisplayQuote />

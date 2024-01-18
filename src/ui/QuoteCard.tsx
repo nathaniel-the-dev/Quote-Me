@@ -1,7 +1,7 @@
 const QuoteCard = ({ children }: any) => {
 	return (
 		<section>
-			<blockquote className="card max-w-prose dark:bg-neutral dark:text-neutral-content w-full py-6 mx-auto shadow-lg">
+			<blockquote className="card max-w-prose dark:bg-neutral dark:text-neutral-content w-full pt-6 mx-auto shadow-lg">
 				{children}
 			</blockquote>
 		</section>

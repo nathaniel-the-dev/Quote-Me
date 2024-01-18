@@ -35,9 +35,9 @@ const DisplayQuote = () => {
 						</p>
 					</animated.div>
 
-					<QuoteCard.Actions className="items-center justify-center">
+					<QuoteCard.Actions className="flex-col items-center justify-center">
 						<GetQuote />
-						<Button icon={<HiShare />} className="btn-md btn-outline" onClick={toggleShareModal}>
+						<Button icon={<HiShare />} className="btn-sm btn-ghost" onClick={toggleShareModal}>
 							Share
 						</Button>
 					</QuoteCard.Actions>

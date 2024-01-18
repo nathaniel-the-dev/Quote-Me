@@ -44,6 +44,13 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 		link.remove();
 	}
 
+	function handleModalClick(e: any) {
+		e.stopPropagation();
+		if (e.target.classList.contains('modal')) {
+			onClose();
+		}
+	}
+
 	useEffect(() => {
 		if (!selectedImage) return;
 
@@ -53,7 +60,12 @@ const ImageEditor = ({ data, show, onClose }: any) => {
 	}, [selectedImage]);
 
 	return (
-		<dialog className="modal backdrop-blur-sm bg-black bg-opacity-50" open={show} onClose={onClose}>
+		<dialog
+			className="modal backdrop-blur-sm bg-black bg-opacity-50"
+			open={show}
+			onClose={onClose}
+			onClick={handleModalClick}
+		>
 			<div className="modal-box h-[80vh] max-w-[90vw]">
 				<form method="dialog">
 					<button className="btn btn-sm btn-circle btn-ghost right-2 top-2 absolute">

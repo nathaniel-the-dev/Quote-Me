@@ -1,6 +1,17 @@
 import { HiArrowDownTray, HiXMark } from 'react-icons/hi2';
 import { createPortal } from 'react-dom';
-import { EmailShareButton, EmailIcon } from 'react-share';
+import {
+	EmailShareButton,
+	EmailIcon,
+	FacebookShareButton,
+	FacebookIcon,
+	TwitterShareButton,
+	TwitterIcon,
+	LinkedinIcon,
+	LinkedinShareButton,
+	WhatsappIcon,
+	WhatsappShareButton,
+} from 'react-share';
 
 import { useQuote } from '../../providers/QuoteProvider';
 
@@ -10,15 +21,22 @@ import Button from '../../ui/Button';
 import ImageEditor from '../editor/ImageEditor';
 
 const ShareQuote = () => {
+	let subject = `Here is an Inspirational Quote for You...`;
 	const { quote, openShareModal, toggleShareModal } = useQuote();
 
 	const shareUrl = window.location.href + '?id=' + quote!._id;
 
-	// const [editorOpen, setEditorOpen] = useState(false);
-	const [editorOpen, setEditorOpen] = useState(true);
+	const [editorOpen, setEditorOpen] = useState(false);
 
 	function toggleEditor() {
 		setEditorOpen((prev) => !prev);
+	}
+
+	function handleModalClick(e: any) {
+		e.stopPropagation();
+		if (e.target.classList.contains('modal')) {
+			toggleShareModal();
+		}
 	}
 
 	if (!quote) return null;
@@ -26,9 +44,10 @@ const ShareQuote = () => {
 		<>
 			{createPortal(
 				<dialog
-					className="modal backdrop-blur-sm bg-black bg-opacity-50"
+					className="modal backdrop-blur-sm backdrop:bg-black bg-black bg-opacity-50"
 					open={openShareModal}
 					onClose={toggleShareModal}
+					onClick={handleModalClick}
 				>
 					<div className="modal-box">
 						<div className="modal-action">
@@ -59,11 +78,24 @@ const ShareQuote = () => {
 								<EmailShareButton
 									className="btn-sm"
 									url={shareUrl}
-									subject={`Here is an Inspirational Quote for You..."`}
+									subject={subject}
 									body={`"${quote.text}" - ${quote.author.name}\n`}
 								>
 									<EmailIcon size={'2em'} round />
 								</EmailShareButton>
+
+								<FacebookShareButton className="btn-sm" url={shareUrl} hashtag="#InspirationalQuotes">
+									<FacebookIcon size={'2em'} round />
+								</FacebookShareButton>
+								<TwitterShareButton className="btn-sm" url={shareUrl}>
+									<TwitterIcon size={'2em'} round />
+								</TwitterShareButton>
+								<WhatsappShareButton className="btn-sm" url={shareUrl}>
+									<WhatsappIcon size={'2em'} round />
+								</WhatsappShareButton>
+								<LinkedinShareButton className="btn-sm" url={shareUrl}>
+									<LinkedinIcon size={'2em'} round />
+								</LinkedinShareButton>
 							</div>
 						</div>
 					</div>

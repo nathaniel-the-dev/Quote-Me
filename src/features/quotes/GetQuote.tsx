@@ -1,6 +1,6 @@
 import { useQuote } from '../../providers/QuoteProvider';
 import Button from '../../ui/Button';
-import { HiSun } from 'react-icons/hi2';
+import { HiOutlineArrowPathRoundedSquare } from 'react-icons/hi2';
 
 const Spinner = () => <span className="loading loading-spinner"></span>;
 
@@ -10,13 +10,11 @@ const GetQuote = () => {
 	return (
 		<Button
 			type="primary"
-			className="btn-md"
-			icon={!isLoading ? <HiSun /> : <Spinner />}
+			className="btn-lg btn-circle"
+			icon={!isLoading ? <HiOutlineArrowPathRoundedSquare /> : <Spinner />}
 			disabled={isLoading}
 			onClick={getRandomQuote}
-		>
-			{!isLoading ? 'Inspire Me' : 'Getting Quote...'}
-		</Button>
+		></Button>
 	);
 };
 export default GetQuote;

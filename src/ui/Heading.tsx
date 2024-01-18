@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Heading = ({ children }: { children: React.ReactNode }) => {
-	return <h1 className="mb-8 text-5xl font-bold text-center">{children}</h1>;
+const Heading = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+	return <h1 className={`text-6xl uppercase font-bold text-center ${className}`}>{children}</h1>;
 };
 export default Heading;
