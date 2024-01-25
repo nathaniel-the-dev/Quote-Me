@@ -1,6 +1,5 @@
 import chroma from 'chroma-js';
 import { animated, useSpring } from '@react-spring/web';
-import { getRandomValue } from '../../utils/helpers';
 
 type Props = {
 	name: string;
