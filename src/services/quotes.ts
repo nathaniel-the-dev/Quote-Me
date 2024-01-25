@@ -20,7 +20,6 @@ export async function getQuoteById(id: string) {
 
 		return data ? formatQuote(data) : null;
 	} catch (error) {
-		console.error(error);
 		throw new Error('Failed to fetch quotes');
 	}
 }
@@ -39,7 +38,6 @@ export async function getRandomQuote(opts?: { tag?: string }): Promise<Quote | n
 
 		return formatQuote(data[0]);
 	} catch (error) {
-		console.error(error);
 		throw new Error('Failed to fetch random quote');
 	}
 }
@@ -63,7 +61,6 @@ export async function getTags() {
 
 		return uniqueTags;
 	} catch (error) {
-		console.error(error);
 		throw new Error('Failed to fetch tags');
 	}
 }

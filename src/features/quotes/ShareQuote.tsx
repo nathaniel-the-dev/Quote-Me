@@ -49,7 +49,7 @@ const ShareQuote = () => {
 					onClose={toggleShareModal}
 					onClick={handleModalClick}
 				>
-					<div className="modal-box">
+					<div className="modal-box dark:bg-neutral">
 						<div className="modal-action">
 							<form method="dialog">
 								<button className="btn btn-sm btn-circle btn-ghost right-2 top-2 absolute">

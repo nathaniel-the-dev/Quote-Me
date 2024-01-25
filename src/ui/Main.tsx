@@ -9,7 +9,7 @@ const Main = ({ children, className, ...props }: { children: React.ReactNode; cl
 			}
 			{...props}
 		>
-			<div className="container py-20 my-auto bg-white rounded-lg">{children}</div>
+			<div className="dark:bg-neutral-800 container py-20 my-auto bg-white rounded-lg">{children}</div>
 		</main>
 	);
 };
