@@ -2,7 +2,7 @@
 
 ![Screenshot](./screenshot.png)
 
-Welcome to Quote Me - the inspirational quote generator that sparks positivity with a single click!
+Welcome to [Quote Me](https://quote-me-nc.netlify.app/) - the inspirational quote generator that sparks positivity with a single click!
 
 ## Description
 
@@ -25,11 +25,9 @@ Whether you're looking for a daily dose of motivation or a powerful statement to
 1. Click the "Generate Quote" button to get a new inspirational quote
 2. Share the quote with friends by clicking the share button
 
-or check it out [here](https://quote-me-nc.netlify.app/)
-
 ## Contributing
 
-We welcome contributions from the community. Please submit a pull request with your proposed changes.
+If you have any suggestions for how to improve the app, please submit a pull request with your proposed changes.
 
 ## License
 
