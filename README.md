@@ -25,6 +25,8 @@ Whether you're looking for a daily dose of motivation or a powerful statement to
 1. Click the "Generate Quote" button to get a new inspirational quote
 2. Share the quote with friends by clicking the share button
 
+or check it out [here](https://quote-me-nc.netlify.app/)
+
 ## Contributing
 
 We welcome contributions from the community. Please submit a pull request with your proposed changes.
